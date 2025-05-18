@@ -6,7 +6,7 @@ Config = {
     
     LockVehicles = 'NoInteract',                                      -- Set Vehicle Lock Status, Available Options = Unlocked, Locked, NoInteract
 
-    FuelSystem = 'LegacyFuel',                                        -- Put Your Fuel Script Name Here! Use 'none' To Disable The System
+    FuelSystem = 'none',                                              -- Put Your Fuel Script Name Here! Use 'none' To Disable The System
     FuelLevel = '0',                                                  -- Put Your Fuel Level For Vehicles Here! Available Options = '0' to '100'
     
     Freeze = true,                                                    -- Should We Freeze Vehicles? true or false
@@ -14,7 +14,13 @@ Config = {
     Refresh = 5,                                                      -- Put The Time For Refresh. PLEASE NOTE THAT LOWER THAN 10 SEC MAY CONSUME YOUR SERVER CPU
     RefreshUnit = 'Min',                                              -- Put The Unit For Refresh, Available Options = 'Sec', 'Min' or 'Hour'. PLEASE NOTE THAT LOWER THAN 10 SEC MAY CONSUME YOUR SERVER CPU
 
-    Shadow = true,                                                    -- Put false or true, While false, Vehicles Won't Have Shadow Effect
+    EnableTargetOptions = true,                                       -- Enable 'ox_target' interaction options for vehicles
+    EnableHood = true,                                                -- Enable 'Open Hood' interaction option
+    EnableTrunk = true,                                               -- Enable 'Open Trunk' interaction option
+    EnableDoors = true,                                               -- Enable 'Open Doors' interaction option
+    EnableVehInfo = true,                                             -- Enable 'Vehicle Info' interaction option
+    EnableVehStat = true,                                             -- Enable 'Vehicle Stats' interaction option
+    SpeedUnit = 'kmh',                                                -- Vehicle speed unit for Vehicle Information, Available Options = 'mph' or 'kmh'
 
     ShowroomVehicles = {
         ['pdm'] = {                                                   -- Just A Simple Name!
