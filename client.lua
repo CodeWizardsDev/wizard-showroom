@@ -14,6 +14,31 @@ else
     OnPlayerLoaded = 'playerConnecting'
 end
 
+local vehicleClassNames = {
+    [0] = "Compacts",
+    [1] = "Sedans",
+    [2] = "SUVs",
+    [3] = "Coupes",
+    [4] = "Muscle",
+    [5] = "Sports Classics",
+    [6] = "Sports",
+    [7] = "Super",
+    [8] = "Motorcycles",
+    [9] = "Off-road",
+    [10] = "Industrial",
+    [11] = "Utility",
+    [12] = "Vans",
+    [13] = "Cycles",
+    [14] = "Boats",
+    [15] = "Helicopters",
+    [16] = "Planes",
+    [17] = "Service",
+    [18] = "Emergency",
+    [19] = "Military",
+    [20] = "Commercial",
+    [21] = "Trains"
+}
+
 local LockVehicle = Config.LockVehicles == 'Unlocked' and 1 or Config.LockVehicles == 'Locked' and 2 or Config.LockVehicles == 'NoInteract' and 3 or false
 local lockenable = LockVehicle and true or false
 local plateenabled = Config.CustomPlate and true or false
@@ -69,7 +94,96 @@ local function SpawnVeh()
                 end
             end
             if Config.Shadow == false then
-                SetVehicleShadowEffect(veh, Config.Shadow) -- Disable vehicle shadows
+                SetVehicleShadowEffect(veh, Config.Shadow)
+            end
+
+            local function addTargetOption(veh, optionName, label, icon, onSelect)
+                exports.ox_target:addLocalEntity(veh, {{
+                    name = optionName,
+                    label = label,
+                    icon = icon,
+                    onSelect = onSelect
+                }})
+            end
+            if Config.EnableTargetOptions then
+                if Config.EnableHood then
+                    addTargetOption(veh, 'showroom_hood', Translations.target.hood, 'fas fa-car', function()
+                        local doorId = 4
+                        if GetVehicleDoorAngleRatio(veh, doorId) > 0.0 then
+                            SetVehicleDoorShut(veh, doorId, false)
+                        else
+                            SetVehicleDoorOpen(veh, doorId, false, false)
+                        end
+                    end)
+                end
+                if Config.EnableTrunk then
+                    addTargetOption(veh, 'showroom_trunk', Translations.target.trunk, 'fas fa-car', function()
+                        local doorId = 5
+                        if GetVehicleDoorAngleRatio(veh, doorId) > 0.0 then
+                            SetVehicleDoorShut(veh, doorId, false)
+                        else
+                            SetVehicleDoorOpen(veh, doorId, false, false)
+                        end
+                    end)
+                end
+                if Config.EnableDoors then
+                    addTargetOption(veh, 'showroom_doors', Translations.target.doors, 'fas fa-car-side', function()
+                        for doorId = 0, 3 do
+                            if GetVehicleDoorAngleRatio(veh, doorId) > 0.0 then
+                                SetVehicleDoorShut(veh, doorId, false)
+                            else
+                                SetVehicleDoorOpen(veh, doorId, false, false)
+                            end
+                        end
+                    end)
+                end
+                if Config.EnableVehInfo then
+                    addTargetOption(veh, 'showroom_info', Translations.target.vehinfo, 'fas fa-info-circle', function()
+                        local model = GetEntityModel(veh)
+                        local vehicleProps = {
+                            model = model,
+                            name = GetLabelText(GetDisplayNameFromVehicleModel(model)),
+                            brand = GetMakeNameFromVehicleModel(model),
+                            plate = GetVehicleNumberPlateText(veh),
+                            class = GetVehicleClass(veh)
+                        }
+                        local info = string.format(
+                            "\n\n%s: %s \n%s: %s \n%s: %s",
+                            Translations.vehinf.name, vehicleProps.name, 
+                            Translations.vehinf.brand, vehicleProps.brand,
+                            Translations.vehinf.class, vehicleClassNames[vehicleProps.class] or "Unknown"
+                        )
+                        TriggerEvent('chat:addMessage', {
+                            color = {255, 255, 0},
+                            multiline = true,
+                            args = {'Vehicle Info', info}
+                        })
+                    end)
+                end
+                if Config.EnableVehStat then
+                    addTargetOption(veh, 'showroom_stats', Translations.target.vehstat, 'fas fa-chart-bar', function()
+                        local acceleration = math.min(GetVehicleHandlingFloat(veh, 'CHandlingData', 'fInitialDriveForce') * 250, 100)
+                        local braking = math.min(GetVehicleHandlingFloat(veh, 'CHandlingData', 'fBrakeForce') * 50, 100)
+                        local handling = math.min(GetVehicleHandlingFloat(veh, 'CHandlingData', 'fTractionCurveMax') * 33, 100)
+                        
+                        local maxSpeed = GetVehicleHandlingFloat(veh, 'CHandlingData', 'fInitialDriveMaxFlatVel')
+                        maxSpeed = Config.SpeedUnit == 'mph' and math.floor(maxSpeed * 1.22) or math.floor(maxSpeed * 1.32)
+                        
+                        local statsText = string.format(
+                            "\n\n%s: %d%s\nAcceleration: %d/100\nBraking: %d/100\nHandling: %d/100",
+                            Translations.vehstat.topspeed, maxSpeed, Config.SpeedUnit,
+                            math.floor(acceleration),
+                            math.floor(braking),
+                            math.floor(handling)
+                        )
+                        
+                        TriggerEvent('chat:addMessage', {
+                            color = {255, 255, 0},
+                            multiline = true,
+                            args = {"Vehicle Stats", statsText}
+                        })
+                    end)
+                end
             end
             table.insert(vehicles, veh)
         end
@@ -80,12 +194,12 @@ local function DelVeh()
     for i = 1, #vehicles do
         DeleteVehicle(vehicles[i])
     end
-    vehicles = {} -- Clear the vehicles table
+    vehicles = {}
 end
 
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() == resourceName then
-        DelVeh() -- Delete any existing vehicles when the resource starts
+        DelVeh()
         Citizen.Wait(100)
         SpawnVeh()
     end
@@ -93,17 +207,17 @@ end)
 
 AddEventHandler('onResourceStop', function(resourceName)
     if GetCurrentResourceName() == resourceName then
-        DelVeh() -- Delete the vehicles when the resource stops
+        DelVeh()
     end
 end)
 
 AddEventHandler(OnPlayerLoaded, function()
-    SpawnVeh() -- Spawn vehicles when a player is loaded
+    SpawnVeh()
 end)
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(refresh) -- Check every specified interval
+        Citizen.Wait(refresh)
         DelVeh()
         Citizen.Wait(100)
         SpawnVeh()
