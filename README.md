@@ -17,6 +17,10 @@ Our first script! please give us star if this script is usefull for you!
 - Customizable Fuel-Level (for Unlocked mode)
 - Customizable Refresh Vehicles Timer, You can simply use Sec, Min and Hour
 - Customizable Shadow Effects
+- Interaction menu using ox-target script
+- Option to open Hood, Trunk or Doors
+- Option to Show vehicle information
+- Option to Show vehicle performance status
 
 # Depencies
 - [qb-core](https://github.com/qbcore-framework/qb-core) or [es-extended](https://github.com/ESX-Official/es_extended) or NOTHING!
