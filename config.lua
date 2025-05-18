@@ -43,3 +43,24 @@ Config = {
 --        },
     },
 }
+
+Translations = {
+    target = {
+        ["hood"] = "Toggle Hood",
+        ["trunk"] = "Toggle Trunk",
+        ["doors"] = "Toggle Doors",
+
+        ["vehinfo"] = "Vehicle Information",
+        ["vehstat"] = "Vehicle Stats",
+    },
+
+    vehinf = {
+        ["name"] = "Name",
+        ["brand"] = "Brand",
+        ["class"] = "Class",
+    },
+
+    vehstat = {
+        ["topspeed"] = "Top Speed",
+    },
+}
