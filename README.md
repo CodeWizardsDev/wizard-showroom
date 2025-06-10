@@ -7,6 +7,9 @@ Our first script! please give us star if this script is usefull for you!
 ![image](https://github.com/CodeWizardsDev/wizard-showroom/assets/94300419/959e7848-3efe-4b7d-a390-6405b07960f5)
 
 
+# Contents
+- [WIKI](https://code-wizards.gitbook.io/codewizards/vehicle-showroom/informations)
+
 
 # Features
 - Spawn addon/default vehicles!
